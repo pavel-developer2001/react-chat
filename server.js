@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
 	socket.on("ROOM:JOIN", ({ roomId, userName }) => {
 		socket.join(roomId);
 		rooms.get(roomId).get("users").set(socket.id, userName);
-		const users = [...rooms.get(roomId).get("users").values()];
+		const users = [...rooms.get(roomId)?.get("users")?.values()];
 		socket.to(roomId).broadcast?.emit("ROOM:SET_USERS", users);
 	});
 	socket.on("ROOM:NEW_MESSAGE", ({ roomId, userName, text }) => {
@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
 			userName,
 			text,
 		};
-		rooms.get(roomId).get("messages").push(obj);
+		rooms.get(roomId)?.get("messages")?.push(obj);
 		socket.to(roomId).broadcast?.emit("ROOM:NEW_MESSAGE", obj);
 	});
 	socket.on("disconnect", () => {
