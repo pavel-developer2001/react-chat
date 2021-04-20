@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
 		socket.join(roomId);
 		rooms.get(roomId).get("users").set(socket.id, userName);
 		const users = [...rooms.get(roomId).get("users").values()];
-		socket.to(roomId).broadcast.emit("ROOM:SET_USERS", users);
+		socket.to(roomId).broadcast?.emit("ROOM:SET_USERS", users);
 	});
 	socket.on("ROOM:NEW_MESSAGE", ({ roomId, userName, text }) => {
 		const obj = {
@@ -46,13 +46,13 @@ io.on("connection", (socket) => {
 			text,
 		};
 		rooms.get(roomId).get("messages").push(obj);
-		socket.to(roomId).broadcast.emit("ROOM:NEW_MESSAGE", obj);
+		socket.to(roomId).broadcast?.emit("ROOM:NEW_MESSAGE", obj);
 	});
 	socket.on("disconnect", () => {
 		rooms.forEach((value, roomId) => {
 			if (value.get("users").delete(socket.id)) {
 				const users = [...value.get("users").values()];
-				socket.to(roomId).broadcast.emit("ROOM:SET_USERS", users);
+				socket.to(roomId).broadcast?.emit("ROOM:SET_USERS", users);
 			}
 		});
 	});

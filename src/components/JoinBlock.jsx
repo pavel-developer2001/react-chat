@@ -22,7 +22,7 @@ const JoinBlock = ({ onLogin }) => {
 	const [isLoading, setIsLoading] = React.useState(false);
 
 	const onEnter = async () => {
-		if (!userName | !roomId) {
+		if (!roomId || !userName) {
 			return alert("Неверные данные");
 		}
 		const obj = { roomId, userName };
@@ -33,7 +33,6 @@ const JoinBlock = ({ onLogin }) => {
 	return (
 		<div className={classes.root}>
 			<TextField
-				id='outlined-secondary1'
 				label='Romm ID'
 				variant='outlined'
 				color='secondary'
@@ -41,7 +40,6 @@ const JoinBlock = ({ onLogin }) => {
 				onChange={(e) => setRoomId(e.target.value)}
 			/>
 			<TextField
-				id='outlined-secondary1'
 				label='Ваше Имя'
 				variant='outlined'
 				color='secondary'
