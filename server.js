@@ -1,9 +1,10 @@
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
-
+// const cors = require("cors");
 const io = require("socket.io")(server);
 
+// app.use(cors());
 app.use(express.json());
 
 const rooms = new Map();
@@ -37,22 +38,22 @@ io.on("connection", (socket) => {
 	socket.on("ROOM:JOIN", ({ roomId, userName }) => {
 		socket.join(roomId);
 		rooms.get(roomId).get("users").set(socket.id, userName);
-		const users = [...rooms.get(roomId)?.get("users")?.values()];
-		socket.to(roomId).broadcast?.emit("ROOM:SET_USERS", users);
+		const users = [...rooms.get(roomId).get("users").values()];
+		socket.to(roomId).emit("ROOM:SET_USERS", users);
 	});
 	socket.on("ROOM:NEW_MESSAGE", ({ roomId, userName, text }) => {
 		const obj = {
 			userName,
 			text,
 		};
-		rooms.get(roomId)?.get("messages")?.push(obj);
-		socket.to(roomId).broadcast?.emit("ROOM:NEW_MESSAGE", obj);
+		rooms.get(roomId)?.get("messages").push(obj);
+		socket.to(roomId).emit("ROOM:NEW_MESSAGE", obj);
 	});
 	socket.on("disconnect", () => {
 		rooms.forEach((value, roomId) => {
 			if (value.get("users").delete(socket.id)) {
 				const users = [...value.get("users").values()];
-				socket.to(roomId).broadcast?.emit("ROOM:SET_USERS", users);
+				socket.to(roomId).emit("ROOM:SET_USERS", users);
 			}
 		});
 	});
